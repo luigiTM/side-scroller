@@ -86,10 +86,10 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./assets/background.png":
-/*!*******************************!*\
-  !*** ./assets/background.png ***!
-  \*******************************/
+/***/ "./assets/cenary/background.png":
+/*!**************************************!*\
+  !*** ./assets/cenary/background.png ***!
+  \**************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -99,10 +99,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./assets/hills.png":
-/*!**************************!*\
-  !*** ./assets/hills.png ***!
-  \**************************/
+/***/ "./assets/cenary/hills.png":
+/*!*********************************!*\
+  !*** ./assets/cenary/hills.png ***!
+  \*********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -112,16 +112,55 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./assets/platform.png":
-/*!*****************************!*\
-  !*** ./assets/platform.png ***!
-  \*****************************/
+/***/ "./assets/cenary/platform.png":
+/*!************************************!*\
+  !*** ./assets/cenary/platform.png ***!
+  \************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "ffab39d3487de561be1a081fcfb3806d.png");
+
+/***/ }),
+
+/***/ "./assets/character/_Idle.png":
+/*!************************************!*\
+  !*** ./assets/character/_Idle.png ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "1df7f4ac40bad3533ccdffdb66fac6f8.png");
+
+/***/ }),
+
+/***/ "./assets/character/_Jump.png":
+/*!************************************!*\
+  !*** ./assets/character/_Jump.png ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "55202c010b8df659502fdcfb4d285335.png");
+
+/***/ }),
+
+/***/ "./assets/character/_Run.png":
+/*!***********************************!*\
+  !*** ./assets/character/_Run.png ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "c06f8fd775e4d0812d94c7cee8686330.png");
 
 /***/ }),
 
@@ -134,14 +173,20 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _assets_platform_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../assets/platform.png */ "./assets/platform.png");
-/* harmony import */ var _assets_hills_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../assets/hills.png */ "./assets/hills.png");
-/* harmony import */ var _assets_background_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/background.png */ "./assets/background.png");
+/* harmony import */ var _assets_cenary_platform_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../assets/cenary/platform.png */ "./assets/cenary/platform.png");
+/* harmony import */ var _assets_cenary_hills_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../assets/cenary/hills.png */ "./assets/cenary/hills.png");
+/* harmony import */ var _assets_cenary_background_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../assets/cenary/background.png */ "./assets/cenary/background.png");
+/* harmony import */ var _assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../assets/character/_Idle.png */ "./assets/character/_Idle.png");
+/* harmony import */ var _assets_character_Jump_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../assets/character/_Jump.png */ "./assets/character/_Jump.png");
+/* harmony import */ var _assets_character_Run_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../assets/character/_Run.png */ "./assets/character/_Run.png");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+
+
 
 
 
@@ -154,7 +199,7 @@ var gravity = 0.5;
 var velocityY = 10;
 var velocityX = 10;
 var velocityBackgroundX = velocityX * 0.666;
-var platformImage = createImage(_assets_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
+var platformImage = createImage(_assets_cenary_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var keys = {
   ArrowUp: {
     pressed: false,
@@ -184,19 +229,36 @@ var Player = /*#__PURE__*/function () {
       dx: 0,
       dy: 0
     };
-    this.width = 30;
-    this.height = 30;
+    this.width = 100;
+    this.height = 200;
+    this.image = createImage(_assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    this.frame = 0;
+    this.sprites = {
+      stand: {
+        right: createImage(_assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__["default"])
+      },
+      run: {
+        right: createImage(_assets_character_Run_png__WEBPACK_IMPORTED_MODULE_5__["default"])
+      },
+      jump: createImage(_assets_character_Jump_png__WEBPACK_IMPORTED_MODULE_4__["default"])
+    };
+    this.currentSprite = this.sprites.stand.right;
   }
 
   _createClass(Player, [{
     key: "draw",
     value: function draw() {
-      canvas2d.fillStyle = 'red';
-      canvas2d.fillRect(this.position.x, this.position.y, this.width, this.height);
+      canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height);
     }
   }, {
     key: "update",
     value: function update() {
+      this.frame++;
+
+      if (this.frame > 10) {
+        this.frame = 0;
+      }
+
       this.draw();
       this.position.y += this.velocity.dy;
       this.position.x += this.velocity.dx;
@@ -289,7 +351,7 @@ function init() {
   platforms = [];
   var totalOffset = 0;
 
-  for (var index = 0; index < 50; index++) {
+  for (var index = 0; index < 1; index++) {
     var offset = platformOffset(index);
     platforms.push(new Platform({
       x: platformImage.width * index + (offset + totalOffset),
@@ -297,17 +359,16 @@ function init() {
       image: platformImage
     }));
     totalOffset += offset;
-    console.log(platforms[index].position.x);
   }
 
   backgroundObjects = [new BackgroundObjects({
     x: -1,
     y: -1,
-    image: createImage(_assets_background_png__WEBPACK_IMPORTED_MODULE_2__["default"])
+    image: createImage(_assets_cenary_background_png__WEBPACK_IMPORTED_MODULE_2__["default"])
   }), new BackgroundObjects({
     x: -1,
     y: -1,
-    image: createImage(_assets_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"])
+    image: createImage(_assets_cenary_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"])
   })];
   scrollOffset = 0;
 }
@@ -330,7 +391,7 @@ function animate() {
 
   if (keys.ArrowRight.pressed && player.position.x < canvas.width / 2) {
     player.velocity.dx = velocityX;
-  } else if (keys.ArrowLeft.pressed && player.position.x > 100) {
+  } else if (keys.ArrowLeft.pressed && player.position.x > 100 || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
     player.velocity.dx = -velocityX;
   } else {
     player.velocity.dx = 0;
@@ -345,7 +406,7 @@ function animate() {
       });
     }
 
-    if (keys.ArrowLeft.pressed) {
+    if (keys.ArrowLeft.pressed && scrollOffset > 0) {
       platforms.forEach(function (platform) {
         platform.position.x += velocityX;
         scrollOffset += velocityX;
@@ -361,6 +422,10 @@ function animate() {
     if (player.position.y + player.height <= platform.position.y && player.position.y + player.height + player.velocity.dy >= platform.position.y && player.position.x + player.width >= platform.position.x && player.position.x <= platform.position.x + platform.width) {
       player.velocity.dy = 0;
       keys.ArrowUp.disableJump = false;
+
+      if (keys.ArrowRight.pressed) {
+        player.currentSprite = player.sprites.run.right;
+      }
     }
   });
   player.update();
@@ -383,6 +448,7 @@ window.addEventListener('keydown', function (event) {
     case 'w':
     case 'ArrowUp':
     case 'Space':
+      player.currentSprite = player.sprites.jump;
       keys.ArrowUp.pressed = true;
       break;
 
@@ -398,6 +464,7 @@ window.addEventListener('keydown', function (event) {
     case 'd':
     case 'ArrowRight':
       keys.ArrowRight.pressed = true;
+      player.currentSprite = player.sprites.run.right;
       break;
   }
 });
@@ -427,6 +494,7 @@ window.addEventListener('keyup', function (event) {
     case 'd':
     case 'ArrowRight':
       keys.ArrowRight.pressed = false;
+      player.currentSprite = player.sprites.stand.right;
       break;
   }
 });

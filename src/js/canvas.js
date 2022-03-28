@@ -1,6 +1,10 @@
-import platform from '../../assets/platform.png'
-import hills from '../../assets/hills.png'
-import background from '../../assets/background.png'
+import platform from '../../assets/cenary/platform.png'
+import hills from '../../assets/cenary/hills.png'
+import background from '../../assets/cenary/background.png'
+
+import idle from '../../assets/character/_Idle.png'
+import jump from '../../assets/character/_Jump.png'
+import run from '../../assets/character/_Run.png'
 
 const canvas = document.querySelector("canvas")
 const canvas2d = canvas.getContext('2d')
@@ -41,16 +45,31 @@ class Player {
             dx: 0,
             dy: 0
         }
-        this.width = 30
-        this.height = 30
+        this.width = 100
+        this.height = 200
+        this.image = createImage(idle)
+        this.frame = 0;
+        this.sprites = {
+            stand: {
+                right: createImage(idle)
+            },
+            run: {
+                right: createImage(run)
+            },
+            jump: createImage(jump)
+        }
+        this.currentSprite = this.sprites.stand.right
     }
 
     draw() {
-        canvas2d.fillStyle = 'red'
-        canvas2d.fillRect(this.position.x, this.position.y, this.width, this.height)
+        canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height)
     }
 
     update() {
+        this.frame++
+        if (this.frame > 10) {
+            this.frame = 0
+        }
         this.draw()
         this.position.y += this.velocity.dy
         this.position.x += this.velocity.dx
@@ -116,11 +135,10 @@ function init() {
     player = new Player();
     platforms = []
     var totalOffset = 0
-    for (let index = 0; index < 50; index++) {
+    for (let index = 0; index < 1; index++) {
         let offset = platformOffset(index)
         platforms.push(new Platform({ x: (((platformImage.width * index) + (offset + totalOffset))), y: 470, image: platformImage }))
         totalOffset += offset
-        console.log(platforms[index].position.x)
     }
     backgroundObjects = [
         new BackgroundObjects({ x: -1, y: -1, image: createImage(background) }),
@@ -145,7 +163,8 @@ function animate() {
     }
     if (keys.ArrowRight.pressed && (player.position.x < canvas.width / 2)) {
         player.velocity.dx = velocityX
-    } else if (keys.ArrowLeft.pressed && (player.position.x > 100)) {
+    } else if (keys.ArrowLeft.pressed && (player.position.x > 100)
+        || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
         player.velocity.dx = -velocityX
     }
     else {
@@ -159,7 +178,7 @@ function animate() {
                 backgorundObject.position.x -= velocityBackgroundX
             })
         }
-        if (keys.ArrowLeft.pressed) {
+        if (keys.ArrowLeft.pressed && scrollOffset > 0) {
             platforms.forEach(platform => {
                 platform.position.x += velocityX
                 scrollOffset += velocityX
@@ -178,6 +197,9 @@ function animate() {
             && (player.position.x <= platform.position.x + platform.width)) {
             player.velocity.dy = 0
             keys.ArrowUp.disableJump = false
+            if (keys.ArrowRight.pressed) {
+                player.currentSprite = player.sprites.run.right
+            }
         }
     })
 
@@ -201,6 +223,7 @@ window.addEventListener('keydown', (event) => {
         case 'w':
         case 'ArrowUp':
         case 'Space':
+            player.currentSprite = player.sprites.jump
             keys.ArrowUp.pressed = true
             break
         case 'a':
@@ -213,6 +236,7 @@ window.addEventListener('keydown', (event) => {
         case 'd':
         case 'ArrowRight':
             keys.ArrowRight.pressed = true
+            player.currentSprite = player.sprites.run.right
             break;
     }
 })
@@ -239,6 +263,7 @@ window.addEventListener('keyup', (event) => {
         case 'd':
         case 'ArrowRight':
             keys.ArrowRight.pressed = false
+            player.currentSprite = player.sprites.stand.right
             break
     }
 })
