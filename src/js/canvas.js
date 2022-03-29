@@ -51,23 +51,40 @@ class Player {
         this.frame = 0;
         this.sprites = {
             stand: {
-                right: createImage(idle)
+                right: createImage(idle),
+                cropWidth: 120,
+                cropHeight: 80,
+                animationFrames: 10
             },
             run: {
-                right: createImage(run)
+                right: createImage(run),
+                cropWidth: 120,
+                cropHeight: 80,
+                animationFrames: 10
             },
-            jump: createImage(jump)
+            jump: {
+                right: createImage(jump),
+                cropWidth: 120,
+                cropHeight: 80,
+                animationFrames: 3
+            }
         }
         this.currentSprite = this.sprites.stand.right
+        this.currentCropWidht = 120
+        this.currentCropHeight = 80
+        this.currentAnimationFrames = 10
     }
 
     draw() {
+        if(this.currentSprite){
+
+        }
         canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height)
     }
 
     update() {
         this.frame++
-        if (this.frame > 10) {
+        if (this.frame >= player.currentAnimationFrames) {
             this.frame = 0
         }
         this.draw()
@@ -126,7 +143,7 @@ function platformOffset(index) {
         case 0:
             return -1
         default:
-            return Math.floor(Math.random() * 200) + 100
+            return Math.floor( 200) + 200
     }
 
 }
@@ -135,7 +152,7 @@ function init() {
     player = new Player();
     platforms = []
     var totalOffset = 0
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < 20; index++) {
         let offset = platformOffset(index)
         platforms.push(new Platform({ x: (((platformImage.width * index) + (offset + totalOffset))), y: 470, image: platformImage }))
         totalOffset += offset
@@ -148,6 +165,7 @@ function init() {
 }
 
 function animate() {
+    console.log(player.velocity.dy)
     requestAnimationFrame(animate)
     canvas2d.fillStyle = 'white'
     canvas2d.fillRect(0, 0, canvas.width, canvas.height)
@@ -157,13 +175,14 @@ function animate() {
     platforms.forEach(platform => {
         platform.draw()
     })
-    if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump) {
+    if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === 0.5) {
         player.velocity.dy = -velocityY
         keys.ArrowUp.disableJump = true
     }
     if (keys.ArrowRight.pressed && (player.position.x < canvas.width / 2)) {
         player.velocity.dx = velocityX
-    } else if (keys.ArrowLeft.pressed && (player.position.x > 100)
+    } 
+    else if (keys.ArrowLeft.pressed && (player.position.x > 100)
         || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
         player.velocity.dx = -velocityX
     }
@@ -198,8 +217,10 @@ function animate() {
             keys.ArrowUp.disableJump = false
             if (keys.ArrowRight.pressed) {
                 player.currentSprite = player.sprites.run.right
+                player.currentAnimationFrames = player.sprites.run.animationFrames
             } else {
                 player.currentSprite = player.sprites.stand.right
+                player.currentAnimationFrames = player.sprites.stand.animationFrames
             }
         }
     })
@@ -216,7 +237,6 @@ animate()
 
 window.addEventListener('keydown', (event) => {
     var key = event.key
-    // console.log(key)
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(key) > -1) {
         event.preventDefault();
     }
@@ -224,7 +244,8 @@ window.addEventListener('keydown', (event) => {
         case 'w':
         case 'ArrowUp':
         case 'Space':
-            player.currentSprite = player.sprites.jump
+            player.currentSprite = player.sprites.jump.right
+            player.currentAnimationFrames = player.sprites.jump.animationFrames
             keys.ArrowUp.pressed = true
             break
         case 'a':
@@ -238,13 +259,13 @@ window.addEventListener('keydown', (event) => {
         case 'ArrowRight':
             keys.ArrowRight.pressed = true
             player.currentSprite = player.sprites.run.right
+            player.currentAnimationFrames = player.sprites.run.animationFrames
             break;
     }
 })
 
 window.addEventListener('keyup', (event) => {
     var key = event.key
-    // console.log(key)
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(key) > -1) {
         event.preventDefault();
     }
@@ -265,6 +286,7 @@ window.addEventListener('keyup', (event) => {
         case 'ArrowRight':
             keys.ArrowRight.pressed = false
             player.currentSprite = player.sprites.stand.right
+            player.currentAnimationFrames = player.sprites.stand.animationFrames
             break
     }
 })

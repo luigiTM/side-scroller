@@ -235,19 +235,35 @@ var Player = /*#__PURE__*/function () {
     this.frame = 0;
     this.sprites = {
       stand: {
-        right: createImage(_assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__["default"])
+        right: createImage(_assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__["default"]),
+        cropWidth: 120,
+        cropHeight: 80,
+        animationFrames: 10
       },
       run: {
-        right: createImage(_assets_character_Run_png__WEBPACK_IMPORTED_MODULE_5__["default"])
+        right: createImage(_assets_character_Run_png__WEBPACK_IMPORTED_MODULE_5__["default"]),
+        cropWidth: 120,
+        cropHeight: 80,
+        animationFrames: 10
       },
-      jump: createImage(_assets_character_Jump_png__WEBPACK_IMPORTED_MODULE_4__["default"])
+      jump: {
+        right: createImage(_assets_character_Jump_png__WEBPACK_IMPORTED_MODULE_4__["default"]),
+        cropWidth: 120,
+        cropHeight: 80,
+        animationFrames: 3
+      }
     };
     this.currentSprite = this.sprites.stand.right;
+    this.currentCropWidht = 120;
+    this.currentCropHeight = 80;
+    this.currentAnimationFrames = 10;
   }
 
   _createClass(Player, [{
     key: "draw",
     value: function draw() {
+      if (this.currentSprite) {}
+
       canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height);
     }
   }, {
@@ -255,7 +271,7 @@ var Player = /*#__PURE__*/function () {
     value: function update() {
       this.frame++;
 
-      if (this.frame > 10) {
+      if (this.frame >= player.currentAnimationFrames) {
         this.frame = 0;
       }
 
@@ -342,7 +358,7 @@ function platformOffset(index) {
       return -1;
 
     default:
-      return Math.floor(Math.random() * 200) + 100;
+      return Math.floor(200) + 200;
   }
 }
 
@@ -351,7 +367,7 @@ function init() {
   platforms = [];
   var totalOffset = 0;
 
-  for (var index = 0; index < 10; index++) {
+  for (var index = 0; index < 20; index++) {
     var offset = platformOffset(index);
     platforms.push(new Platform({
       x: platformImage.width * index + (offset + totalOffset),
@@ -374,6 +390,7 @@ function init() {
 }
 
 function animate() {
+  console.log(player.velocity.dy);
   requestAnimationFrame(animate);
   canvas2d.fillStyle = 'white';
   canvas2d.fillRect(0, 0, canvas.width, canvas.height);
@@ -384,7 +401,7 @@ function animate() {
     platform.draw();
   });
 
-  if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump) {
+  if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === 0.5) {
     player.velocity.dy = -velocityY;
     keys.ArrowUp.disableJump = true;
   }
@@ -424,8 +441,10 @@ function animate() {
 
       if (keys.ArrowRight.pressed) {
         player.currentSprite = player.sprites.run.right;
+        player.currentAnimationFrames = player.sprites.run.animationFrames;
       } else {
         player.currentSprite = player.sprites.stand.right;
+        player.currentAnimationFrames = player.sprites.stand.animationFrames;
       }
     }
   });
@@ -439,7 +458,7 @@ function animate() {
 init();
 animate();
 window.addEventListener('keydown', function (event) {
-  var key = event.key; // console.log(key)
+  var key = event.key;
 
   if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(key) > -1) {
     event.preventDefault();
@@ -449,7 +468,8 @@ window.addEventListener('keydown', function (event) {
     case 'w':
     case 'ArrowUp':
     case 'Space':
-      player.currentSprite = player.sprites.jump;
+      player.currentSprite = player.sprites.jump.right;
+      player.currentAnimationFrames = player.sprites.jump.animationFrames;
       keys.ArrowUp.pressed = true;
       break;
 
@@ -466,11 +486,12 @@ window.addEventListener('keydown', function (event) {
     case 'ArrowRight':
       keys.ArrowRight.pressed = true;
       player.currentSprite = player.sprites.run.right;
+      player.currentAnimationFrames = player.sprites.run.animationFrames;
       break;
   }
 });
 window.addEventListener('keyup', function (event) {
-  var key = event.key; // console.log(key)
+  var key = event.key;
 
   if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(key) > -1) {
     event.preventDefault();
@@ -496,6 +517,7 @@ window.addEventListener('keyup', function (event) {
     case 'ArrowRight':
       keys.ArrowRight.pressed = false;
       player.currentSprite = player.sprites.stand.right;
+      player.currentAnimationFrames = player.sprites.stand.animationFrames;
       break;
   }
 });
