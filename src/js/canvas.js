@@ -38,15 +38,15 @@ var scrollOffset = 0
 class Player {
     constructor() {
         this.position = {
-            x: 100,
+            x: 150,
             y: 100
         }
         this.velocity = {
             dx: 0,
             dy: 0
         }
-        this.width = 100
-        this.height = 200
+        this.width = 240
+        this.height = 160
         this.image = createImage(idle)
         this.frame = 0;
         this.sprites = {
@@ -135,7 +135,7 @@ function init() {
     player = new Player();
     platforms = []
     var totalOffset = 0
-    for (let index = 0; index < 1; index++) {
+    for (let index = 0; index < 10; index++) {
         let offset = platformOffset(index)
         platforms.push(new Platform({ x: (((platformImage.width * index) + (offset + totalOffset))), y: 470, image: platformImage }))
         totalOffset += offset
@@ -187,18 +187,19 @@ function animate() {
                 backgorundObject.position.x += velocityBackgroundX
             })
         }
-        // console.log(scrollOffset)
     }
 
     platforms.forEach(platform => {
         if ((player.position.y + player.height <= platform.position.y)
             && (player.position.y + player.height + player.velocity.dy >= platform.position.y)
-            && (player.position.x + player.width >= platform.position.x)
-            && (player.position.x <= platform.position.x + platform.width)) {
+            && ((player.position.x + player.width  / 2)  >= platform.position.x)
+            && ((player.position.x + player.width  / 2)  <= platform.position.x + platform.width)) {
             player.velocity.dy = 0
             keys.ArrowUp.disableJump = false
             if (keys.ArrowRight.pressed) {
                 player.currentSprite = player.sprites.run.right
+            } else {
+                player.currentSprite = player.sprites.stand.right
             }
         }
     })

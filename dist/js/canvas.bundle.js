@@ -222,15 +222,15 @@ var Player = /*#__PURE__*/function () {
     _classCallCheck(this, Player);
 
     this.position = {
-      x: 100,
+      x: 150,
       y: 100
     };
     this.velocity = {
       dx: 0,
       dy: 0
     };
-    this.width = 100;
-    this.height = 200;
+    this.width = 240;
+    this.height = 160;
     this.image = createImage(_assets_character_Idle_png__WEBPACK_IMPORTED_MODULE_3__["default"]);
     this.frame = 0;
     this.sprites = {
@@ -351,7 +351,7 @@ function init() {
   platforms = [];
   var totalOffset = 0;
 
-  for (var index = 0; index < 1; index++) {
+  for (var index = 0; index < 10; index++) {
     var offset = platformOffset(index);
     platforms.push(new Platform({
       x: platformImage.width * index + (offset + totalOffset),
@@ -414,17 +414,18 @@ function animate() {
       backgroundObjects.forEach(function (backgorundObject) {
         backgorundObject.position.x += velocityBackgroundX;
       });
-    } // console.log(scrollOffset)
-
+    }
   }
 
   platforms.forEach(function (platform) {
-    if (player.position.y + player.height <= platform.position.y && player.position.y + player.height + player.velocity.dy >= platform.position.y && player.position.x + player.width >= platform.position.x && player.position.x <= platform.position.x + platform.width) {
+    if (player.position.y + player.height <= platform.position.y && player.position.y + player.height + player.velocity.dy >= platform.position.y && player.position.x + player.width / 2 >= platform.position.x && player.position.x + player.width / 2 <= platform.position.x + platform.width) {
       player.velocity.dy = 0;
       keys.ArrowUp.disableJump = false;
 
       if (keys.ArrowRight.pressed) {
         player.currentSprite = player.sprites.run.right;
+      } else {
+        player.currentSprite = player.sprites.stand.right;
       }
     }
   });
