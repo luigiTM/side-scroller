@@ -34,6 +34,7 @@ var player
 var platforms
 var backgroundObjects
 var scrollOffset = 0
+var skipFrame = true
 
 class Player {
     constructor() {
@@ -76,14 +77,17 @@ class Player {
     }
 
     draw() {
-        if(this.currentSprite){
+        if (this.currentSprite) {
 
         }
         canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height)
     }
 
     update() {
-        this.frame++
+        if (!skipFrame) {
+            this.frame++
+        }
+        skipFrame = !skipFrame
         if (this.frame >= player.currentAnimationFrames) {
             this.frame = 0
         }
@@ -143,7 +147,7 @@ function platformOffset(index) {
         case 0:
             return -1
         default:
-            return Math.floor( 200) + 200
+            return Math.floor(200) + 200
     }
 
 }
@@ -165,7 +169,6 @@ function init() {
 }
 
 function animate() {
-    console.log(player.velocity.dy)
     requestAnimationFrame(animate)
     canvas2d.fillStyle = 'white'
     canvas2d.fillRect(0, 0, canvas.width, canvas.height)
@@ -175,13 +178,13 @@ function animate() {
     platforms.forEach(platform => {
         platform.draw()
     })
-    if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === 0.5) {
+    if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === gravity) {
         player.velocity.dy = -velocityY
         keys.ArrowUp.disableJump = true
     }
     if (keys.ArrowRight.pressed && (player.position.x < canvas.width / 2)) {
         player.velocity.dx = velocityX
-    } 
+    }
     else if (keys.ArrowLeft.pressed && (player.position.x > 100)
         || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
         player.velocity.dx = -velocityX
@@ -211,8 +214,8 @@ function animate() {
     platforms.forEach(platform => {
         if ((player.position.y + player.height <= platform.position.y)
             && (player.position.y + player.height + player.velocity.dy >= platform.position.y)
-            && ((player.position.x + player.width  / 2)  >= platform.position.x)
-            && ((player.position.x + player.width  / 2)  <= platform.position.x + platform.width)) {
+            && ((player.position.x + ((player.width / 2))) >= platform.position.x)
+            && ((player.position.x + ((player.width / 2) - 25)) <= platform.position.x + platform.width)) {
             player.velocity.dy = 0
             keys.ArrowUp.disableJump = false
             if (keys.ArrowRight.pressed) {
