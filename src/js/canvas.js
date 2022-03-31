@@ -2,9 +2,12 @@ import platform from '../../assets/cenary/platform.png'
 import hills from '../../assets/cenary/hills.png'
 import background from '../../assets/cenary/background.png'
 
-import idle from '../../assets/character/_Idle.png'
-import jump from '../../assets/character/_Jump.png'
-import run from '../../assets/character/_Run.png'
+import idleRight from '../../assets/character/_IdleRight.png'
+import jumpRight from '../../assets/character/_JumpRight.png'
+import runRight from '../../assets/character/_RunRight.png'
+import idleLeft from '../../assets/character/_IdleLeft.png'
+import jumpLeft from '../../assets/character/_JumpLeft.png'
+import runLeft from '../../assets/character/_RunLeft.png'
 
 const canvas = document.querySelector("canvas")
 const canvas2d = canvas.getContext('2d')
@@ -35,6 +38,7 @@ var platforms
 var backgroundObjects
 var scrollOffset = 0
 var skipFrame = true
+var movimentDisable = true
 
 class Player {
     constructor() {
@@ -48,23 +52,26 @@ class Player {
         }
         this.width = 240
         this.height = 160
-        this.image = createImage(idle)
+        this.image = createImage(idleRight)
         this.frame = 0;
         this.sprites = {
             stand: {
-                right: createImage(idle),
+                right: createImage(idleRight),
+                left: createImage(idleLeft),
                 cropWidth: 120,
                 cropHeight: 80,
                 animationFrames: 10
             },
             run: {
-                right: createImage(run),
+                right: createImage(runRight),
+                left: createImage(runLeft),
                 cropWidth: 120,
                 cropHeight: 80,
                 animationFrames: 10
             },
             jump: {
-                right: createImage(jump),
+                right: createImage(jumpRight),
+                left: createImage(jumpLeft),
                 cropWidth: 120,
                 cropHeight: 80,
                 animationFrames: 3
@@ -77,9 +84,6 @@ class Player {
     }
 
     draw() {
-        if (this.currentSprite) {
-
-        }
         canvas2d.drawImage(this.currentSprite, 120 * this.frame, 0, 120, 80, this.position.x, this.position.y, this.width, this.height)
     }
 
@@ -147,7 +151,7 @@ function platformOffset(index) {
         case 0:
             return -1
         default:
-            return Math.floor(200) + 200
+            return 440
     }
 
 }
@@ -166,6 +170,7 @@ function init() {
         new BackgroundObjects({ x: -1, y: -1, image: createImage(hills) })
     ]
     scrollOffset = 0
+    movimentDisable = true
 }
 
 function animate() {
@@ -178,36 +183,38 @@ function animate() {
     platforms.forEach(platform => {
         platform.draw()
     })
-    if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === gravity) {
-        player.velocity.dy = -velocityY
-        keys.ArrowUp.disableJump = true
-    }
-    if (keys.ArrowRight.pressed && (player.position.x < canvas.width / 2)) {
-        player.velocity.dx = velocityX
-    }
-    else if (keys.ArrowLeft.pressed && (player.position.x > 100)
-        || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
-        player.velocity.dx = -velocityX
-    }
-    else {
-        player.velocity.dx = 0
-        if (keys.ArrowRight.pressed) {
-            platforms.forEach(platform => {
-                platform.position.x -= velocityX
-                scrollOffset -= velocityX
-            })
-            backgroundObjects.forEach(backgorundObject => {
-                backgorundObject.position.x -= velocityBackgroundX
-            })
+    if (!movimentDisable) {
+        if (keys.ArrowUp.pressed && !keys.ArrowUp.disableJump && player.velocity.dy === gravity) {
+            player.velocity.dy = -velocityY
+            keys.ArrowUp.disableJump = true
         }
-        if (keys.ArrowLeft.pressed && scrollOffset > 0) {
-            platforms.forEach(platform => {
-                platform.position.x += velocityX
-                scrollOffset += velocityX
-            })
-            backgroundObjects.forEach(backgorundObject => {
-                backgorundObject.position.x += velocityBackgroundX
-            })
+        if (keys.ArrowRight.pressed && (player.position.x < canvas.width / 2)) {
+            player.velocity.dx = velocityX
+        }
+        else if (keys.ArrowLeft.pressed && (player.position.x > 100)
+            || keys.ArrowLeft.pressed && scrollOffset === 0 && player.position.x > 0) {
+            player.velocity.dx = -velocityX
+        }
+        else {
+            player.velocity.dx = 0
+            if (keys.ArrowRight.pressed) {
+                platforms.forEach(platform => {
+                    platform.position.x -= velocityX
+                    scrollOffset -= velocityX
+                })
+                backgroundObjects.forEach(backgorundObject => {
+                    backgorundObject.position.x -= velocityBackgroundX
+                })
+            }
+            if (keys.ArrowLeft.pressed && scrollOffset > 0) {
+                platforms.forEach(platform => {
+                    platform.position.x += velocityX
+                    scrollOffset += velocityX
+                })
+                backgroundObjects.forEach(backgorundObject => {
+                    backgorundObject.position.x += velocityBackgroundX
+                })
+            }
         }
     }
 
@@ -221,9 +228,18 @@ function animate() {
             if (keys.ArrowRight.pressed) {
                 player.currentSprite = player.sprites.run.right
                 player.currentAnimationFrames = player.sprites.run.animationFrames
-            } else {
+            }
+            else if (keys.ArrowLeft.pressed) {
+                player.currentSprite = player.sprites.run.left
+                player.currentAnimationFrames = player.sprites.run.animationFrames
+
+            }
+            else {
                 player.currentSprite = player.sprites.stand.right
                 player.currentAnimationFrames = player.sprites.stand.animationFrames
+            }
+            if (movimentDisable) {
+                movimentDisable = !movimentDisable
             }
         }
     })
@@ -254,6 +270,8 @@ window.addEventListener('keydown', (event) => {
         case 'a':
         case 'ArrowLeft':
             keys.ArrowLeft.pressed = true
+            player.currentSprite = player.sprites.run.left
+            player.currentAnimationFrames = player.sprites.run.animationFrames
             break;
         case 's':
         case 'ArrowDown':
@@ -280,6 +298,8 @@ window.addEventListener('keyup', (event) => {
             break
         case 'a':
         case 'ArrowLeft':
+            player.currentSprite = player.sprites.stand.left
+            player.currentAnimationFrames = player.sprites.stand.animationFrames
             keys.ArrowLeft.pressed = false
             break
         case 's':
