@@ -101,10 +101,6 @@ class Player {
         if ((this.position.y + this.height + this.velocity.dy) <= canvas.height) {
             this.velocity.dy += gravity
         }
-        // else {
-        //     this.velocity.dy = 0
-        //     keys.ArrowUp.disableJump = false
-        // }
     }
 }
 
@@ -151,7 +147,7 @@ function platformOffset(index) {
         case 0:
             return -1
         default:
-            return 440
+            return 300 + Math.min(index, 140)
     }
 
 }
@@ -160,7 +156,7 @@ function init() {
     player = new Player();
     platforms = []
     var totalOffset = 0
-    for (let index = 0; index < 20; index++) {
+    for (let index = 0; index < 4; index++) {
         let offset = platformOffset(index)
         platforms.push(new Platform({ x: (((platformImage.width * index) + (offset + totalOffset))), y: 470, image: platformImage }))
         totalOffset += offset
